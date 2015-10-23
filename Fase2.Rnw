@@ -155,7 +155,7 @@ Posteriormente se obtiene el rendimiento dado por la siguiente ecuación:
 
 @
 
-\subsection{Tabla resumen con resultados}
+
 \subsection{Definición breve del \emph{benchmark}: IPC}
 Benchmark\par
 Para evaluar los fondos de inversión, es necesario tener un índice de referencia para analizar 
@@ -347,8 +347,9 @@ for(j in 1:(ncol(rendimientos)-1)){
 }
 ganancias <- contador/length(posiciones)
 @
+\subsection{Tabla resumen con resultados}
 
-\subsection{Selección de fondos}
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|l|1|1|}\hline
@@ -383,4 +384,5 @@ Proporción (ratio) de excedente de bajas & \Sexpr{ex_ratio_bajas[4]}&\Sexpr{ex_r
 Proporción (ratio) de ganancias &\Sexpr{ganancias[4]}&\Sexpr{ganancias[5]} \\ \hline
 \end{tabular}
 \end{table}
+\subsection{Selección de fondos}
 \end{document}
