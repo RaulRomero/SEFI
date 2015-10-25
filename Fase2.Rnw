@@ -45,22 +45,30 @@ Para obtenerlo es necesario conocer el valor final del fondo as\'i como su valor
 r_t = \frac{P_t}{P_{t-1}}-1
 \end{equation}
 
-Este m\'etodo fue seleccionado debido a que es un buen acercamiento al retorno que se obtiene al invertir en dicho fondo, a pesar de que solo considera dos momentos de la invers\'on, y en este caso no es necesario contemplar ning\'un flujo de efectivo intermedio dado que no se ha realizado ninguna inyecci\'on de efectivo en la evaluaci\'on inicial del fondo.
-[Agregar segundo método]
+Este m\'etodo fue seleccionado debido a que es un buen acercamiento al retorno que se obtiene al invertir en dicho fondo, a pesar de que solo considera dos momentos de la invers\'on, y en este caso no es necesario contemplar ning\'un flujo de efectivo intermedio dado que no se ha realizado ninguna inyecci\'on de efectivo en la evaluaci\'on inicial del fondo.\par
+
+El segundo método elegido es el del rendimiento logarítmico, por medio del cual se obtiene el rendimiento continuo; tal fórmula es: 
+
+\begin{equation}\label{logn}
+r_t = \ln(\frac{P_t}{P_{t-1}})
+\end{equation}
+
+Este método se tomó en cuenta debido a que la igualdad entre los retornos anteriores conseguidos cuando éstos son muy pequeños, cuando los trades son en un periodo muy pequeño. Por otra parte, hay una estabilidad numérica por la adición de pequeñas cantidades es en términos numéricos fuerte.
+
 
 
 
 \subsection{Presentación matemática de ambos métodos}
 <<descarga, echo=FALSE, message=FALSE, warning=FALSE>>=
 require(quantmod)
+require(timeSeries)
 
 # Nombrar acciones de interés - EDITAR{n_acciones}
 n_acciones <- c("VALUEV5B.MX","GBMMODBO.MX","HSBCBOLBFV.MX","ACTI500B3.MX","FRANOPRB1.MX","^MXX")
 n <- length(n_acciones)
 
 # Intervalo de tiempo para los datos - EDITAR{inter_t}
-inter_t <- c(toString(as.Date(as.numeric(Sys.Date())-365*2)),  
-             toString(as.Date(Sys.Date())))
+inter_t <- c("2013-10-23", "2015-10-23")
 
 
 getSymbols(n_acciones, src = 'yahoo', from = inter_t[1], to = inter_t[2])
@@ -148,7 +156,13 @@ rendimientos <- precios[2:nrow(precios),] /
 colnames(rendimientos)  <- n_acciones
 @
 Posteriormente se obtiene el rendimiento dado por la siguiente ecuación:
-%PENDIENTE: Segundo método de rendimiento
+Luego, se obtiene el rendimiento logarítmico dado por la siguiente ecuación:
+%SACAR RENDIMIENTO DEL ULTIMO DIA AL PRIMERO
+<<rendimientosln, echo=TRUE>>=
+rendimientosln <- log(precios[2:nrow(precios),] /
+                   precios[1:((nrow(precios) - 1)), ])
+colnames(rendimientosln)  <- n_acciones 
+@
 %PENDIENTE: Markowitz
 
 <<markowitz, echo=TRUE, message=FALSE, warning=FALSE>>=
@@ -384,5 +398,83 @@ Proporción (ratio) de excedente de bajas & \Sexpr{ex_ratio_bajas[4]}&\Sexpr{ex_r
 Proporción (ratio) de ganancias &\Sexpr{ganancias[4]}&\Sexpr{ganancias[5]} \\ \hline
 \end{tabular}
 \end{table}
+A continuación se realiza el análisis de los estadísticos del Benchmark  para cada uno de los fondos seleccionados.\par
+En cuanto al Retorno en Exceso Geométrico, se puede observar que el fondo VALUEV5B tuvo un exceso de .029511\% de lo que hubiera obtenido de solo haber invertido en el benchmark, en este caso en el IPC, mientras que el fondo GBMMODBO tuvo un excedente de .003150699 por ciento respecto a lo que hubiera ganado en solo invertir en el IPC, el fondo HSBCBOLBFV tuvo un excedente de 00.0014933, a su vez el fondo ACTI500B3 tuvo un excedente de 00.06538 por ciento y finalmente el fondo FRANOPRB1 su excedente respecto a lo que se hubiera obtenido de solo invertir en el benchmark fue de 00.075489\%. \par
+Por lo que en cuanto al retorno en exceso geométrico el fondo con mayor excedente fue el fondo FRANOPRB1.
+Pasando al segundo estadístico que es el indicador promedio de alzas, el cuál toma aquellos valores del fondo donde el benchmark fue positivo. En el primer fondo podemos ver que tiene un indicador de 0.18967 lo que indica que el fondo está capturando los momentos positivos del IPC, al igual que el fondo GBMMODBO también se encuentra capturando los momentos positivos del benchmark, al igual que HSBC con un valor de 0.137497, así como el fondo ACTI500B se encuentra haciendo un trabajo positivo igual que el benchmark con un valor de 0.1409415 así también lo hace el fondo FRANOPRB1 con un valor de 0.157296. \par
+En cuanto al segundo indicador evaluado es VALUEV5 el que mejor está capturando los momentos positivos del benchmark.\par
+Al analizar como tercer indicador el promedio de bajas, se observa que el fondo VALUEV5B al tener este indicador con un valor de 0.0265312 se puede decir que se están capturando los momentos negativos del IPC, mientras que el valor -0.0038969 del fondo GBMMODBO indica que lo está haciendo mejor que el fondo. El fondo HSBCBOLBFV es positivo con un valor de 0.060968 lo que indica comportamiento igual de negativo que el benchmark, finalmente el valor negativo del fondo ACTI500B3 y FRANOPRB1 con valores -0.1424859 y -0.1575395 tienen un comportamiento mejor al del benchmark.\par
+
+El tercer indicador del benchmark nos demuestra que el mejor fondo es el FRANOPRB1 debido a que es que el que al momento en que el IPC se comporta negativamente, éste se comporta positivamente.\par
+La proporción de números de alzas del fondo VALUEV5B indica que el 51.56\% de las veces el administrador lo hizo igual que el mercado, GBMMODBO fue el 54.26\% de las veces se hizo un trabajo igual al del IPC, en cuando el fondo HSBCBOLBF el 49.32\% de las ocasiones, el fondo ACTI500B3 lo hizo el 55.61 y el FRANOPRB1 el 60.53 por ciento de las veces lo hizo igual que el mercado.\par
+Por lo que se puede deducir que FRANOPRB1 es el fondo que se comporta en mayor número de ocasiones similar al fondo.\par
+Ahora bien la proporción de números a la baja del fondo VALUEV5B indica que 54.88\% de la veces que el mercado lo hizo negativo también lo hizo negativo, así como el 41.40\% de las veces que el IPC lo hizo negativo el fondo GBMMODBO se comportó de la misma manera. En cuanto al fondo HSBCBOLBFV 49.30\% de las veces se comportó igualmente negativo al benchmark, mientras que ACTI500B3 42.79 por ciento y FRANOPRB1 42.33 por ciento de las ocasiones es negativo al igual que el Indicador de Precios y Cotizaciones.
+En esta ocasión el fondo GBMMODBO fue el que lo hizo en menos ocasiones  igualmente negativo al benchmark.
+
 \subsection{Selección de fondos}
+
+<<anualizaciones, warning=FALSE, message=FALSE>>=
+medias_rends <- colMeans(rendimientos[,1:(ncol(rendimientos)-1)])
+libre_riesgo <- 3/100
+
+rend_anual <- (1 + medias_rends) ^ (365/nrow(rendimientos)) - 1
+desv_anual <- colSds(rendimientos[,1:(ncol(rendimientos)-1)])*sqrt(365)
+rend_anual_bench <- (1 + mean(rendimientos[, ncol(rendimientos)])) ^ (365/nrow(rendimientos)) - 1
+desv_anual_bench <- sd(rendimientos[, ncol(rendimientos)])*sqrt(365)
+
+@
+\section{Ratio de \emph{Sharpe}}
+La siguiente fórmula representa el cálculo de Sharpe Ratio (SR): 
+\begin{equation}
+SR = \frac{r_{p} - r_{f}}{\sigma_p}
+\end{equation}
+
+donde\par
+$r_{p}$ es el Retorno anualizado del portafolio\par
+$r_{f}$ es la Tasa libre de riesgo\par
+\sigma_p es la Desviación del portafolio\par
+<<sharpe, warning=FALSE, message=FALSE>>=
+sharpe <- (rend_anual - libre_riesgo) / desv_anual
+sharpe <- sharpe*100
+@
+\section{Retorno ajustado M2}
+Para determinar el Retorno Ajustado M2, se usará la siguiente ecuación:
+\begin{equation}
+M^2 = r_{f} + SR*(\sigma_M - \sigma_p)
+\end{equation}
+
+donde\par
+$r_{p}$ es el Retorno anualizado del portafolio\par
+$\sigma_p$ es la Desviación anualizada del portafolio\par
+$\sigma_M$ es la Desviación anualizada del Mercado (Benchmark)\par
+SR es el Sharpe Ratio
+<<M2, warning=FALSE, message=FALSE>>=
+m2 <- rend_anual + sharpe*(desv_anual_bench-desv_anual)
+m2 <- m2*100
+@
+\section{Retorno diferencial (DR)}
+Luego, para obtener el Retorno Diferencial se utilizan las siguientes ecuaciones:
+\begin{equation}
+b' = r_{f} + (\frac{r_{M} - r_{f}}{\sigma_M})*\sigma_p
+\end{equation}
+
+donde\par
+$r_{M}$ es el Retorno anualizado del Benchmark\par
+$r_{p}$ es el Retorno anualizado del portafolio\par
+$r_{f}$ es la tasa libre de riesgo\par
+$\sigma_p$ es la Desviación anualizada del portafolio\par
+$\sigma_M$ es la Desviación anualizada del Mercado(Benchmark)
+$b'$ es el retorno ajustado del benchmark al riesgo de fondo\par
+
+Esto da como resultado el retorno ajustado del benchmark al riesgo del fondo, para con ello conseguir el Retorno Diferencial,
+
+\begin{equation}
+DR = r_{P} - b'
+\end{equation}
+<<DR, warning=FALSE, message=FALSE>>=
+b_prima <- libre_riesgo + ((rend_anual_bench-libre_riesgo)/desv_anual_bench)*desv_anual
+DR <- rend_anual - b_prima
+DR <- DR*100
+@
+
 \end{document}
