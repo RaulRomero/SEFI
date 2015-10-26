@@ -89,11 +89,11 @@ contador
 
 # Borrar objetos excepto {precios, }
 rm(list=setdiff(ls(), c("precios", "n_acciones")))
+rendimientos <- precios[2:nrow(precios), 1:(ncol(precios) - 1) ] / precios[1:(nrow(precios) - 1), 1:(ncol(precios) - 1)] - 1
 
 
 # Markowitz ---------------------------------------------------------------
 
-rendimientos <- precios[2:nrow(precios), 1:(ncol(precios) - 1) ] / precios[1:(nrow(precios) - 1), 1:(ncol(precios) - 1)] - 1
 filas <- c('Media', 'Varianza')
 estadisticos <- matrix( , nrow = length(filas), ncol = (ncol(precios) - 1))
 colnames(estadisticos) <- n_acciones[1:(length(n_acciones)-1)]
@@ -133,11 +133,44 @@ for(i in 1:nrow(activos)){
 }
 proporciones <- c(activos[renglon, 1], activos[renglon, 2], activos[renglon, 3])
 
+#Simulando el precio para mañana
 
 
+# Estimaciones diaras con dSt -----------------------------------------------------
+#dst = media*dt + sigma*rnorm*sqrt(t)
+require(timeSeries)
+dst <- numeric(3)
 
+medias <- colMeans(rendimientos)
+sigmas <- colSds(rendimientos)
 
+n <- 10000
+estimacion <- matrix( , nrow = n, ncol = length(medias))
 
+for (i in 1:n) {
+estimacion[i, ] <- (medias + sigmas*rnorm(1))
+}
+
+estimaciones.2 <- numeric(length(medias))
+estimaciones.2 <- colMeans(estimacion)
+names(estimaciones.2) <- colnames(rendimientos)
+
+#Estimacion para mañana
+precio_mañana <- precios[nrow(precios), 1:(ncol(precios) - 1)] * 
+  (1 + estimaciones.2)
+
+#St = So...
+
+estimacion_st <- matrix( , nrow = n, ncol = length(medias))
+
+for (i in 1:n) {
+  estimacion_st[i, ] <- precios[nrow(precios), 1:(ncol(precios) - 1)]*
+    exp(medias - ((sigmas^2)/2) + sigmas*rnorm(1))
+}
+
+estimacion_st.2 <- colMeans(estimacion_st)
+estimaciones.2 
+(estimacion_st.2/precios[nrow(precios), 1:(ncol(precios) - 1)] - 1)
 
 
 
