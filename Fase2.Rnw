@@ -36,6 +36,7 @@ ITESO, Universidad Jesuita de Guadalajara \\ Ingeniería Financiera \\ Selección 
 
 \tableofcontents
 \section{Descripción de cada fondo}
+%COPIAR LA PENDEJADA DEL PRIMER CODIGO  GALLEGOS
 \section{Métodos de rendimientos: Definición de métodos}
 Se descargarán los datos haciendo uso de la función \emph{quantmod} en R. 
 El primer m\'etodo elegido para evaluar el rendimiento del fondo es el Retorno Simple, el cu\'al es la medida m\'as b\'asica para conocer el desempeño de un portafolio, en este caso de cada uno de los fondos, ya que considera la variaci\'on del valor del fondo durante el periodo.
@@ -50,7 +51,7 @@ Este m\'etodo fue seleccionado debido a que es un buen acercamiento al retorno q
 El segundo método elegido es el del rendimiento logarítmico, por medio del cual se obtiene el rendimiento continuo; tal fórmula es: 
 
 \begin{equation}\label{logn}
-r_t = \ln(\frac{P_t}{P_{t-1}})
+r_t = \ln\left(\frac{P_t}{P_{t-1}}\right)
 \end{equation}
 
 Este método se tomó en cuenta debido a que la igualdad entre los retornos anteriores conseguidos cuando éstos son muy pequeños, cuando los trades son en un periodo muy pequeño. Por otra parte, hay una estabilidad numérica por la adición de pequeñas cantidades es en términos numéricos fuerte.
@@ -58,7 +59,7 @@ Este método se tomó en cuenta debido a que la igualdad entre los retornos anteri
 
 
 
-\subsection{Presentación matemática de ambos métodos}
+\subsection{Presentación matemática}
 <<descarga, echo=FALSE, message=FALSE, warning=FALSE>>=
 require(quantmod)
 require(timeSeries)
@@ -155,21 +156,49 @@ rendimientos <- precios[2:nrow(precios),] /
                    precios[1:((nrow(precios) - 1)), ] - 1
 colnames(rendimientos)  <- n_acciones
 @
-Posteriormente se obtiene el rendimiento dado por la siguiente ecuación:
-Luego, se obtiene el rendimiento logarítmico dado por la siguiente ecuación:
-%SACAR RENDIMIENTO DEL ULTIMO DIA AL PRIMERO
+
+A continuación se obtiene el rendimiento con los métodos ya mencionados. Los resultados se muestran abajo:
 <<rendimientosln, echo=TRUE>>=
-rendimientosln <- log(precios[2:nrow(precios),] /
-                   precios[1:((nrow(precios) - 1)), ])
-colnames(rendimientosln)  <- n_acciones 
-@
-%PENDIENTE: Markowitz
-
-<<markowitz, echo=TRUE, message=FALSE, warning=FALSE>>=
+rends <- matrix(, nrow = 2, ncol = ncol(precios))
+rends[1, ] <- precios[nrow(precios), ] / precios[1, ] - 1
+rends[2, ] <- log(precios[nrow(precios), ] / precios[1, ])
+colnames(rends) <- n_acciones
+rownames(rends) <- c('Rendimiento simple', 'Rendimiento continuamente compuesto')
 
 @
-
-
+Se obtiene entonces lo siguiente:
+\begin{itemize}
+\item VALUEV5B.MX
+  \begin{itemize}
+    \item Rendimiento simple: \Sexpr{rends[1,1]}
+    \item Rendimiento continuamente compuesto:\Sexpr{rends[2,1]}
+  \end{itemize}
+\item GBMMODBO.MX
+\begin{itemize}
+    \item Rendimiento simple: \Sexpr{rends[1,2]}
+    \item Rendimiento continuamente compuesto:\Sexpr{rends[2,2]}
+  \end{itemize}
+\item HSBCBOLBFV.MX
+\begin{itemize}
+    \item Rendimiento simple:\Sexpr{rends[1,3]}
+    \item Rendimiento continuamente compuesto:\Sexpr{rends[2,3]}
+  \end{itemize}
+\item ACTI500B3.MX
+\begin{itemize}
+    \item Rendimiento simple: \Sexpr{rends[1,4]}
+    \item Rendimiento continuamente compuesto:\Sexpr{rends[2,4]}
+  \end{itemize}
+\item FRANOPRB1.MX
+\begin{itemize}
+    \item Rendimiento simple:\Sexpr{rends[1,5]}
+    \item Rendimiento continuamente compuesto:\Sexpr{rends[2,5]}
+  \end{itemize}
+\item MXX 
+\begin{itemize}
+    \item Rendimiento simple: \Sexpr{rends[1,6]}
+    \item Rendimiento continuamente compuesto: \Sexpr{rends[2,6]}
+  \end{itemize}
+\end{itemize}
 \subsection{Definición breve del \emph{benchmark}: IPC}
 Benchmark\par
 Para evaluar los fondos de inversión, es necesario tener un índice de referencia para analizar 
@@ -412,13 +441,20 @@ Ahora bien la proporción de números a la baja del fondo VALUEV5B indica que 54.8
 En esta ocasión el fondo GBMMODBO fue el que lo hizo en menos ocasiones  igualmente negativo al benchmark.
 
 \subsection{Selección de fondos}
+Debido a los números obtenidos, se concluye que los fondos a utilizarse serán:
+\begin{enumerate}
+\item FRANOPRB1.MX, por ser 8 veces de los tres más destacados en las características mencionadas y visualmente notables en la tabla anterior.
+\item GBMMODBO.MX, por ser 8 veces de los tres más destacados en las características mencionadas y visualmente notables en la tabla anterior.
+\item ACTI500B3.MX, por ser 7 veces de los tres más destacados en las características mencionadas y visualmente notables en la tabla anterior.
+\end{enumerate}
 
+Cabe mencionar que HSBCBOLBFV.MX y VALUEV5B.MX fueron solo una vez parte de los 3 mejores en las características anteriores.
 <<anualizaciones, warning=FALSE, message=FALSE>>=
-medias_rends <- colMeans(rendimientos[,1:(ncol(rendimientos)-1)])
+medias_rends <- colMeans(rendimientos[,1:(ncol(rendimientos))])
 libre_riesgo <- 3/100
 
 rend_anual <- (1 + medias_rends) ^ (365/nrow(rendimientos)) - 1
-desv_anual <- colSds(rendimientos[,1:(ncol(rendimientos)-1)])*sqrt(365)
+desv_anual <- colSds(rendimientos[,1:(ncol(rendimientos))])*sqrt(365)
 rend_anual_bench <- (1 + mean(rendimientos[, ncol(rendimientos)])) ^ (365/nrow(rendimientos)) - 1
 desv_anual_bench <- sd(rendimientos[, ncol(rendimientos)])*sqrt(365)
 
@@ -437,6 +473,16 @@ $r_{f}$ es la Tasa libre de riesgo\par
 sharpe <- (rend_anual - libre_riesgo) / desv_anual
 sharpe <- sharpe*100
 @
+
+Conclusiones del método:
+\begin{enumerate}
+\item Por cada unidad de riesgo, el fondo VALUEV5B.MX pierde $16.20261$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo GBMMODBO.MX pierde $20.78047$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo HSBCBOLBFV.MX pierde $17.28876$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo ACTI500B3.MX pierde $17.37589$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo FRANOPRB1.MX pierde $13.39259$ por ciento de rendimiento.
+\end{enumerate
+}
 \section{Retorno ajustado M2}
 Para determinar el Retorno Ajustado M2, se usará la siguiente ecuación:
 \begin{equation}
@@ -452,6 +498,23 @@ SR es el Sharpe Ratio
 m2 <- rend_anual + sharpe*(desv_anual_bench-desv_anual)
 m2 <- m2*100
 @
+Retorno del Portafolio: 0.022888 por ciento.Conclusiones del método: 
+\begin{enumerate}
+\item El fondo VALUEV5B.MX tiene $26.584754$ por ciento de retorno ajustado.
+Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+
+\item El fondo GBMMODBO.MX tiene $49.957131$ por ciento de retorno ajustado negativo.
+Bajo las mismas condiciones del mercado, el retorno ajustado es menor al retorno del portafolio.
+
+\item El fondo HSBCBOLBFV.MX tiene $10.452223$ por ciento de retorno ajustado.
+Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+
+\item El fondo ACTI500B3.MX tiene $3.705079$ por ciento de retorno ajustado.
+Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+
+\item El fondo FRANOPRB1.MX tiene $69.154464$ por ciento de retorno ajustado.
+Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+\end{enumerate}
 \section{Retorno diferencial (DR)}
 Luego, para obtener el Retorno Diferencial se utilizan las siguientes ecuaciones:
 \begin{equation}
@@ -463,7 +526,7 @@ $r_{M}$ es el Retorno anualizado del Benchmark\par
 $r_{p}$ es el Retorno anualizado del portafolio\par
 $r_{f}$ es la tasa libre de riesgo\par
 $\sigma_p$ es la Desviación anualizada del portafolio\par
-$\sigma_M$ es la Desviación anualizada del Mercado(Benchmark)
+$\sigma_M$ es la Desviación anualizada del Mercado(Benchmark)\par
 $b'$ es el retorno ajustado del benchmark al riesgo de fondo\par
 
 Esto da como resultado el retorno ajustado del benchmark al riesgo del fondo, para con ello conseguir el Retorno Diferencial,
@@ -476,5 +539,21 @@ b_prima <- libre_riesgo + ((rend_anual_bench-libre_riesgo)/desv_anual_bench)*des
 DR <- rend_anual - b_prima
 DR <- DR*100
 @
+Retorno del Portafolio: 0.00. Conclusiones del método:
+\begin{enumerate}
+\item El fondo VALUEV5B.MX tiene $0.313307$ por ciento de retorno diferencial.
+Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
 
+\item El fondo GBMMODBO.MX tiene $0.40653$ por ciento de retorno diferencial negativo.
+Bajo las mismas condiciones del mercado, el retorno diferencial es menor al retorno del portafolio.
+
+\item El fondo HSBCBOLBFV.MX tiene $0.108537$ por ciento de retorno diferencial.
+Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+
+\item El fondo ACTI500B3.MX tiene $0.091393$ por ciento de retorno diferencial.
+Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+
+\item El fondo FRANOPRB1.MX tiene $0.985499$ por ciento de retorno diferencial.
+Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+\end{enumerate}
 \end{document}
