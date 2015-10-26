@@ -54,7 +54,10 @@ Informaci\'on Administrativa: Sergio Andr\'es Garc??a M\'arquez, administrador p
 Descripci\'on: Fondo Monterrey (Value V5) es un fondo de Renta Variable para personas f\'isicas y morales. Brinda una diversificaci\'on \'optima al invertir en una cartera que combina deuda y acciones de empresa y gobiernos.
 
 Composici\'on del Fondo:
-%PRIMERA IMAGEN 
+
+\begin{figure}[h!]
+\includegraphics[width=6cm]{imagen1.jpg}
+\end{figure}
 
 
 Elegido por Alicia Karime Gonz\'alez Beltr\'an
@@ -65,7 +68,7 @@ Emisora: GBM Administradora de Activos SA de CV
 
 Siglas: GBMMODBO.MX
 
-Clasificaci??n del Fondo: Renta Variable
+Clasificación del Fondo: Renta Variable
 
 Horizonte de Inversi\'on: Largo plazo
 
@@ -75,7 +78,9 @@ Administrador principal desde mar 19, 2002
 Descripci\'on: El fondo tiene como objetivo invertir en valores de renta variable, usando como gu\'ia el portafolio modelo de GBM, publicado en los reportes semanales por el departamento de an\'alisis. El fondo invierte principalmente en acciones, por lo que se enfrenta a un mercado de alto riesgo.
 
 Composici\'on del fondo:
-%SEGUNDA IMAGEN
+\begin{figure}[h!]
+\includegraphics[width=6cm]{imagen2.jpg}
+\end{figure}
 
 
 Elegido por Diego Alejandro Ceballos Liz\'arraga
@@ -86,16 +91,18 @@ Emisora: HSBC Global Asset Management (M\'exico), S.A. de C.V. Grupo Financiero 
 
 Siglas: HSBCBOLBFV.MX
 
-Clasificaci??n del Fondo: Renta Variable - Especializada en Acciones.
+Clasificación del Fondo: Renta Variable - Especializada en Acciones.
 
 Horizonte de inversi\'on: Largo Plazo.
 
 Informaci\'on Administrativa: Erick Daniel Vega-Ruiz, Administrador principal desde jul 1, 2010
 
-Descripci\'on: Brinda la opci\'on de invertir en acciones que integran el capital social de empresas o valores que se encuentren referidas a \'estas a trav\'es de Exchange Traded Funds (ETFs) inscritas en el RNV y en menor proporci\'on en acciones extranjeras que cotizen en el SIC (mediana y alta bursatilidad) que le brinden una estrategia de inversi\'on a largo plazo basada en empresas por su capacidad de generaci\'on de flujo de efectivo, su estructura financiera, su valuaci??n en m\'ultiplos y perspectivas para los pr\'oximos a\~nos.
+Descripci\'on: Brinda la opci\'on de invertir en acciones que integran el capital social de empresas o valores que se encuentren referidas a \'estas a trav\'es de Exchange Traded Funds (ETFs) inscritas en el RNV y en menor proporci\'on en acciones extranjeras que cotizen en el SIC (mediana y alta bursatilidad) que le brinden una estrategia de inversi\'on a largo plazo basada en empresas por su capacidad de generaci\'on de flujo de efectivo, su estructura financiera, su valuación en m\'ultiplos y perspectivas para los pr\'oximos a\~nos.
 
 Composici\'on del fondo:
-%TERCERA IMAGEN
+\begin{figure}[h!]
+\includegraphics[width=6cm]{imagen3.jpg}
+\end{figure}
 
 Elegido por Ra\'ul Romero Barrag\'an
 
@@ -109,12 +116,14 @@ Clasificaci\'on del Fondo: Renta variable extranjera
 
 Horizonte de inversi\'on: Largo plazo
 
-Informaci\'on Administrativa: Manuel De Jes??s Somoza Alonso. Administrador principal desde may 8, 2009
+Informaci\'on Administrativa: Manuel De Jesús Somoza Alonso. Administrador principal desde may 8, 2009
 
-Descripci\'on: Fondo de renta variable cuyo objetivo es brindar la posibilidad de invertir en un portafolio indizado al Standard & Poor??s 500. Dicho \'indice se compone de las 500 principales empresas de los EUA, l\'ideres en los principales sectores econ\'omicos norteamericanos. Cartera de inversi\'on del portafolio conformada por trackers, que siguen a este indicador del mercado norteamericano. 
+Descripci\'on: Fondo de renta variable cuyo objetivo es brindar la posibilidad de invertir en un portafolio indizado al S\&P500. Dicho \'indice se compone de las 500 principales empresas de los EUA, l\'ideres en los principales sectores econ\'omicos norteamericanos. Cartera de inversi\'on del portafolio conformada por trackers, que siguen a este indicador del mercado norteamericano. 
 
 Composici\'on del fondo:
-%CUARTA IMAGEN
+\begin{figure}[h!]
+\includegraphics[width=6cm]{imagen4.jpg}
+\end{figure}
 
 
 Elegido por Rodrigo Hern\'andez
@@ -136,7 +145,9 @@ Descripci\'on:
 Fondo que invierte principalmente en Franklin U.S. Opportunities Fund, gestionado por Franklin Advisers, Inc pertenecientes al grupo Franklin Templeton Investment Funds en Luxemburgo. Este fondo subyacente invierte principalmente en activos de renta variable en Estados Unidos de Am\'erica que muestran crecimiento acelerado o superior a la media mundial. 
 
 Composici\'on del fondo: 
-%QUINTA IMAGEN 
+\begin{figure}[h!]
+\includegraphics[width=6cm]{imagen5.jpg}
+\end{figure}
 
 \section{Métodos de rendimientos: Definición de métodos}
 Se descargarán los datos haciendo uso de la función \emph{quantmod} en R. 
@@ -317,7 +328,6 @@ Además, muestra la mecánica y el funcionamiento del mercado accionario en México
 Se eligió el IPC ya que es el principal indicador de la BMV, también porque contiene las $35$ emisoras
 principales en los diversos sectores de la economía mexicana.\par
 Las características por las cuales se eligió este índice, fueron:\par
-Apropiado: Es factible el cálculo del retorno por lo que sería una desventaja el utilizar a un administrador.\par 
 Invertible: El gerente del fondo tiene capacidad para analizar la constitución del índice.\par 
 Accesible: El gerente del fondo puede llevar a cabo de manera similar los componentes del índice.\par 
 Independiente: El retorno se calcula por una empresa independiente.\par 
@@ -665,6 +675,8 @@ Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al reto
 <<gh1, message=FALSE, warning=FALSE>>=
 prop_bench <- desv_anual/desv_anual_bench
 prop_cete <- 1 - prop_bench
+gh1 <- matrix(, nrow=nrow(rendimientos), ncol=ncol(rendimientos))
+colnames(gh1) <- n_acciones
 
 prop_bench_matriz <- matrix( , nrow = nrow(rendimientos), ncol = ncol(rendimientos))
 colnames(prop_bench_matriz) <- n_acciones
@@ -677,6 +689,35 @@ for(i in 1:length(prop_bench)){
   prop_bench_cete[, i] <- prop_cete[i]
 }
 
+for(j in 1:ncol(prop_bench_matriz)){
+  for(i in 1:nrow(prop_bench_matriz)){
+    gh1[i, j] <- prop_bench_matriz[i, j]*rendimientos[i, ncol(rendimientos)] +
+      prop_bench_matriz[i, j]*libre_riesgo_anual
+      
+    }
+  }
+
+sinteticos <- colSums(gh1)
+sinteticos <- (1+sinteticos)^(365/nrow(rendimientos))-1
+
 @
+
+\section{Bibliografía}
+
+\begin{itemize}
+\item VALUE Operadora de S. de Inv. SA de CV. (S7F). Fondo Value Monterrey , S.A. De C.V.. 16 de octubre de 2015, de VALUE Operadora de S. de Inv. SA de CV Sitio web: http://www.value.com.mx/documentos/\\VALUEV5-5.pdf
+
+\item Es-us.finanzas.yahoo.com, (2015).GBMMODBO.MX Perfil | Valores de GBMMOD BO - Yahoo Finanzas. [online] Available at: https://es-us.finanzas.yahoo.com/q/pr?s=GBMMODBO.MX+Perfil [Accessed 16 Oct. 2015].
+
+\item HSBC. (2013). Fondos de inversión [Internet]. México. Disponible desde <https://www.hsbc.com.mx/1/2/es/personas/\\ inversiones-fondos/fondos-de-inversion/deuda-local-premier?Wt.ac=HSBC-BOL> [Acceso 15 de octubre de 2015]. 
+
+\item Actinver, 2014. Actinver. [En línea]
+Available at: https://www.actinver.com/webcenter/portal/Actinver/\\ Productos\_y\_Servicios/Inversiones/Fondos\_de\_Inversion\_Propios?\_adf.ctrl-state=oibbjrhyt\_4&\_af\\\rLoop=3696516555011437#!
+[Último acceso: 17 Octubre 2015].
+ 
+\item FRANKLIN U.S. OPPORTUNITIES FUND, 2015. DOCUMENTO CON INFORMACIÓN CLAVE PARA LA INVERSIÓN. [Online]
+Available at: http://www.franklintempleton.com.mx/downloadsServlet?doci\\d=i5awel00
+[Accessed 17 Octubre 2015].
+\end{itemize}
 
 \end{document}
