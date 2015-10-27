@@ -702,6 +702,8 @@ for(j in 1:ncol(prop_bench_matriz)){
 sinteticos <- colSums(gh1)
 sinteticos <- (1+sinteticos)^(365/nrow(rendimientos))-1
 
+indicador <- rend_anual-sinteticos
+
 @
 
 \section{Bibliografía}
