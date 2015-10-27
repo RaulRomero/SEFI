@@ -46,7 +46,7 @@ n_acciones <- c("ACTI500B3.MX","^MXX")
 n <- length(n_acciones)
 
 # Intervalo de tiempo para los datos - EDITAR{inter_t}
-inter_t <- c("2013-10-23", "2015-10-23")
+inter_t <- c("2014-10-28", "2015-10-28")
 
 
 getSymbols(n_acciones, src = 'yahoo', from = inter_t[1], to = inter_t[2])
