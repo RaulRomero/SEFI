@@ -248,11 +248,12 @@ for(j in 1:ncol(prop_bench_matriz)){
 sinteticos <- colSums(gh1)
 sinteticos <- (1+sinteticos)^(365/nrow(rendimientos))-1
 
+indicador <- rend_anual-sinteticos
 @
-Retorno del benchmark: \Sexpr{sinteticos[2]}. Conclusiones del método:
+ Conclusiones del método:
 
 \begin{enumerate}
-\item Después de igualar las volatilidades y crear un portafolio sintético haciendo uso de CETES con 3\% anual, el fondo \Sexpr{n_acciones[1]} tiene \Sexpr{sinteticos[1]} por ciento de retorno, por lo que se puede afirmar que convenía en el periodo analizado invertir en el fondo en lugar del mercado. 
+\item Después de igualar las volatilidades y crear un portafolio sintético haciendo uso de CETES con 3\% anual, el fondo \Sexpr{n_acciones[1]} tiene un GH1 \Sexpr{indicador[1]} por lo que se puede afirmar que convenía en el periodo analizado invertir en el  mercado. 
 \end{enumerate}
 
 
