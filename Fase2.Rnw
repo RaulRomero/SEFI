@@ -584,7 +584,7 @@ SR = \frac{r_{p} - r_{f}}{\sigma_p}
 donde\par
 $r_{p}$ es el Retorno anualizado del portafolio\par
 $r_{f}$ es la Tasa libre de riesgo\par
-\sigma_p es la Desviación del portafolio\par
+$\sigma_p$ es la Desviación del portafolio\par
 <<sharpe, warning=FALSE, message=FALSE>>=
 sharpe <- (rend_anual - libre_riesgo) / desv_anual
 sharpe <- sharpe*100
