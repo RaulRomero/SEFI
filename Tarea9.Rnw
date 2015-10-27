@@ -40,7 +40,7 @@ ITESO, Universidad Jesuita de Guadalajara \\ Ingeniería Financiera \\ Selección 
 <<descarga, echo=FALSE, message=FALSE, warning=FALSE, results='hide'>>=
 require(quantmod)
 require(timeSeries)
-
+setwd("~/TRABAJOS/ITESO/5 Otoño 2015/Selección y evaluación de fondos de inversión")
 # Nombrar acciones de interés - EDITAR{n_acciones}
 n_acciones <- c("ACTI500B3.MX","^MXX")
 n <- length(n_acciones)
@@ -102,7 +102,7 @@ if(cont_na > 0){
 }
 
 # Descargar precios a hoja de cálculo .csv {0,1} - EDITAR{flag}
-flag <- 0
+flag <- 1
 if (flag == 1){
   write.csv(precios, 'datos1.csv')
 }
