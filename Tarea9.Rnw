@@ -1,0 +1,273 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage[latin1]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{enumerate} 
+\usepackage{indentfirst}
+\usepackage[document]{ragged2e}
+
+
+\oddsidemargin 0in
+\textwidth 6.75in
+\topmargin 0in
+\textheight 8.5in
+\parindent 0em
+\parskip 2ex
+\pagestyle{fancy}
+\lfoot{Ingeniería Financiera}
+\cfoot{\thepage}
+\rfoot{I T E S O}
+
+\begin{document}
+
+\author{ Raúl Romero }
+\title{\textbf{Tarea9}}
+\maketitle
+
+
+\begin{raggedright}
+ITESO, Universidad Jesuita de Guadalajara \\ Ingeniería Financiera \\ Selección y Evaluación de Fondos de Inversión \\ Prof. Benjamín Zárate
+\end{raggedright} 
+
+\tableofcontents
+
+
+\subsection{Presentación de activos}
+<<descarga, echo=FALSE, message=FALSE, warning=FALSE>>=
+require(quantmod)
+require(timeSeries)
+
+# Nombrar acciones de interés - EDITAR{n_acciones}
+n_acciones <- c("ACTI500B3.MX","^MXX")
+n <- length(n_acciones)
+
+# Intervalo de tiempo para los datos - EDITAR{inter_t}
+inter_t <- c("2013-10-23", "2015-10-23")
+
+
+getSymbols(n_acciones, src = 'yahoo', from = inter_t[1], to = inter_t[2])
+
+# Matriz de precios  - EDITAR{m_precios}
+m_precios <- cbind(ACTI500B3.MX[, 4], MXX[, 4])
+nr <- nrow(m_precios)
+nc <- ncol(m_precios)
+
+# Determinar si hay NA y filtro automático
+cont_na <- 0 #numeric(n)
+i <- 1;j <- 1;
+while(i <= nr){
+  if(is.na(m_precios[i,j])==T){
+    cont_na <- cont_na + 1
+    i <- i + 1
+    j <- 1
+  } else {
+    if(j == nc){
+      j <- 1
+      i <- i + 1
+    }else{
+      j = j + 1
+    }
+  }
+}
+
+if(cont_na > 0){
+  m_fprecios <- matrix( , ncol=nc, nrow = nr - cont_na) # matriz de precios filtrados
+  i <- 1; j <- 1; k <- 1;
+  while(i <= nr){
+    if(is.na(m_precios[i,j])==T){
+      i <- i + 1
+      j <- 1
+    } else {
+      if(j == nc){
+        m_fprecios[k, ] <- m_precios[i, ]
+        i <- i + 1
+        j <- 1
+        k <- k + 1
+      }else{
+        j = j + 1
+      }
+    }
+  }
+  colnames(m_fprecios) <- n_acciones
+}
+
+if(cont_na > 0){
+  precios <- as.matrix(m_fprecios)
+} else {
+  precios <- as.matrix(m_precios)
+}
+
+# Descargar precios a hoja de cálculo .csv {0,1} - EDITAR{flag}
+flag <- 0
+if (flag == 1){
+  write.csv(precios, 'datos1.csv')
+}
+
+# Verificar ausencia de NA
+contador <- numeric(ncol(precios))
+for(i in 1:nrow(precios)){
+  for(j in 1:ncol(precios)){
+    if(is.na(precios[i,j])==T){
+      contador[j] <- contador[j] + 1
+    }
+  }
+}
+
+cat("\014")
+cont_na
+contador
+
+# Borrar objetos excepto {precios, }
+rm(list=setdiff(ls(), c("precios", "n_acciones")))
+
+
+@
+
+<<rendimientos, echo=TRUE>>=
+rendimientos <- precios[2:nrow(precios),] / 
+                   precios[1:((nrow(precios) - 1)), ] - 1
+colnames(rendimientos)  <- n_acciones
+@
+
+
+
+
+\section{Riesgo}
+\subsection{Preparación de variables a utilizar}
+<<anualizaciones, warning=FALSE, message=FALSE>>=
+medias_rends <- colMeans(rendimientos[,1:(ncol(rendimientos))])
+libre_riesgo <- 3/100
+libre_riesgo_anual <- (libre_riesgo+1)^(1/360)-1
+rend_anual <- (1 + medias_rends) ^ (365/nrow(rendimientos)) - 1
+desv_anual <- colSds(rendimientos[,1:(ncol(rendimientos))])*sqrt(365)
+rend_anual_bench <- (1 + mean(rendimientos[, ncol(rendimientos)])) ^ (365/nrow(rendimientos)) - 1
+desv_anual_bench <- sd(rendimientos[, ncol(rendimientos)])*sqrt(365)
+
+@
+\subsection{Ratio de \emph{Sharpe}}
+La siguiente fórmula representa el cálculo de Sharpe Ratio (SR): 
+\begin{equation}
+SR = \frac{r_{p} - r_{f}}{\sigma_p}
+\end{equation}
+
+donde\par
+$r_{p}$ es el Retorno anualizado del portafolio\par
+$r_{f}$ es la Tasa libre de riesgo\par
+\sigma_p es la Desviación del portafolio\par
+<<sharpe, warning=FALSE, message=FALSE>>=
+sharpe <- (rend_anual - libre_riesgo) / desv_anual
+sharpe <- sharpe*100
+@
+
+Conclusiones del método:
+\begin{enumerate}
+\item Por cada unidad de riesgo, el fondo VALUEV5B.MX pierde $16.20261$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo GBMMODBO.MX pierde $20.78047$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo HSBCBOLBFV.MX pierde $17.28876$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo ACTI500B3.MX pierde $17.37589$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo FRANOPRB1.MX pierde $13.39259$ por ciento de rendimiento.
+\end{enumerate
+}
+\subsection{Retorno ajustado M2}
+Para determinar el Retorno Ajustado M2, se usará la siguiente ecuación:
+\begin{equation}
+M^2 = r_{f} + SR*(\sigma_M - \sigma_p)
+\end{equation}
+
+donde\par
+$r_{p}$ es el Retorno anualizado del portafolio\par
+$\sigma_p$ es la Desviación anualizada del portafolio\par
+$\sigma_M$ es la Desviación anualizada del Mercado (Benchmark)\par
+SR es el Sharpe Ratio
+<<M2, warning=FALSE, message=FALSE>>=
+m2 <- rend_anual + sharpe*(desv_anual_bench-desv_anual)
+m2 <- m2*100
+@
+Retorno del Portafolio: 0.022888 por ciento.Conclusiones del método: 
+
+\begin{enumerate}
+\item El fondo ACTI500B3.MX tiene $3.705079$ por ciento de retorno ajustado.
+Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+\end{enumerate}
+
+\subsection{Retorno diferencial (DR)}
+Luego, para obtener el Retorno Diferencial se utilizan las siguientes ecuaciones:
+\begin{equation}
+b' = r_{f} + (\frac{r_{M} - r_{f}}{\sigma_M})*\sigma_p
+\end{equation}
+
+donde\par
+$r_{M}$ es el Retorno anualizado del Benchmark\par
+$r_{p}$ es el Retorno anualizado del portafolio\par
+$r_{f}$ es la tasa libre de riesgo\par
+$\sigma_p$ es la Desviación anualizada del portafolio\par
+$\sigma_M$ es la Desviación anualizada del Mercado(Benchmark)\par
+$b'$ es el retorno ajustado del benchmark al riesgo de fondo\par
+
+Esto da como resultado el retorno ajustado del benchmark al riesgo del fondo, para con ello conseguir el Retorno Diferencial,
+
+\begin{equation}
+DR = r_{P} - b'
+\end{equation}
+<<DR, warning=FALSE, message=FALSE>>=
+b_prima <- libre_riesgo + ((rend_anual_bench-libre_riesgo)/desv_anual_bench)*desv_anual
+DR <- rend_anual - b_prima
+DR <- DR*100
+@
+Retorno del Portafolio: 0.00. Conclusiones del método:
+\begin{enumerate}
+
+\item El fondo ACTI500B3.MX tiene $0.091393$ por ciento de retorno diferencial.
+Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+
+
+\end{enumerate}
+
+\subsection{GH1}
+<<gh1, message=FALSE, warning=FALSE>>=
+prop_bench <- desv_anual/desv_anual_bench
+prop_cete <- 1 - prop_bench
+gh1 <- matrix(, nrow=nrow(rendimientos), ncol=ncol(rendimientos))
+colnames(gh1) <- n_acciones
+
+prop_bench_matriz <- matrix( , nrow = nrow(rendimientos), ncol = ncol(rendimientos))
+colnames(prop_bench_matriz) <- n_acciones
+
+prop_bench_cete <- matrix( , nrow = nrow(rendimientos), ncol = ncol(rendimientos))
+colnames(prop_bench_cete) <- n_acciones
+
+for(i in 1:length(prop_bench)){
+  prop_bench_matriz[, i] <- prop_bench[i]
+  prop_bench_cete[, i] <- prop_cete[i]
+}
+
+for(j in 1:ncol(prop_bench_matriz)){
+  for(i in 1:nrow(prop_bench_matriz)){
+    gh1[i, j] <- prop_bench_matriz[i, j]*rendimientos[i, ncol(rendimientos)] +
+      prop_bench_matriz[i, j]*libre_riesgo_anual
+      
+    }
+  }
+
+sinteticos <- colSums(gh1)
+sinteticos <- (1+sinteticos)^(365/nrow(rendimientos))-1
+
+@
+
+\section{Bibliografía}
+
+\begin{itemize}
+
+
+\item Actinver, 2014. Actinver. [En línea]
+Available at: https://www.actinver.com/webcenter/portal/Actinver/\\ Productos\_y\_Servicios/Inversiones/Fondos\_de\_Inversion\_Propios?\_adf.ctrl-state=oibbjrhyt\_4&\_af\\\rLoop=3696516555011437#!
+[Último acceso: 17 Octubre 2015].
+ 
+
+\end{itemize}
+
+\end{document}
