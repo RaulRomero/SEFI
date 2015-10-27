@@ -240,7 +240,7 @@ for(i in 1:length(prop_bench)){
 for(j in 1:ncol(prop_bench_matriz)){
   for(i in 1:nrow(prop_bench_matriz)){
     gh1[i, j] <- prop_bench_matriz[i, j]*rendimientos[i, ncol(rendimientos)] +
-      prop_bench_matriz[i, j]*libre_riesgo_anual
+      prop_bench_cete[i, j]*libre_riesgo_anual
       
     }
   }
