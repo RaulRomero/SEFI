@@ -25,7 +25,7 @@
 \begin{document}
 
 \author{ Raúl Romero }
-\title{\textbf{Tarea9}}
+\title{\textbf{Tarea 9: Riesgos}}
 \maketitle
 
 
@@ -122,7 +122,7 @@ cont_na
 contador
 
 # Borrar objetos excepto {precios, }
-rm(list=setdiff(ls(), c("precios", "n_acciones")))
+#rm(list=setdiff(ls(), c("precios", "n_acciones")))
 
 
 @
@@ -155,7 +155,7 @@ SR = \frac{r_{p} - r_{f}}{\sigma_p}
 donde\par
 $r_{p}$ es el Retorno anualizado del portafolio\par
 $r_{f}$ es la Tasa libre de riesgo\par
-\sigma_p es la Desviación del portafolio\par
+$\sigma_p$ es la Desviación del portafolio\par
 <<sharpe, warning=FALSE, message=FALSE>>=
 sharpe <- (rend_anual - libre_riesgo) / desv_anual
 sharpe <- sharpe*100
