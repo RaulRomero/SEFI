@@ -706,6 +706,15 @@ indicador <- rend_anual-sinteticos
 
 @
 
+
+<<gh2, message=FALSE, warning=FALSE>>=
+prop_bench2 <- prop_bench^(-1)
+prop_cete2  <- 1 - prop_bench2
+
+total_retorno <- numeric()
+total_retorno <- prop_bench2[1:(length (prop_bench2)-1)] * rendimientos[,1:(ncol(rendimientos)-1)] 
+@
+
 \section{Bibliografía}
 
 \begin{itemize}
