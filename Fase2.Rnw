@@ -263,9 +263,10 @@ cont_na
 contador
 
 # Borrar objetos excepto {precios, }
-rm(list=setdiff(ls(), c("precios", "n_acciones")))
+#rm(list=setdiff(ls(), c("precios", "n_acciones")))
 
 nacciones <- c("VALUEV5B.MX","GBMMODBO.MX","HSBCBOLBFV.MX","ACTI500B3.MX","FRANOPRB1.MX","MXX")
+elegidos <- c("GBMMODBO.MX","ACTI500B3.MX","FRANOPRB1.MX")
 @
 
 <<rendimientos, echo=TRUE>>=
@@ -287,7 +288,7 @@ rownames(rends) <- c('Rendimiento simple', 'Rendimiento continuamente compuesto'
 @
 Se obtiene entonces lo siguiente:
 \begin{itemize}
-\item VALUEV5B.MX
+\item \Sexpr{nacciones[1]}
   \begin{itemize}
     \item Rendimiento simple: \Sexpr{rends[1,1]}
     \item Rendimiento continuamente compuesto:\Sexpr{rends[2,1]}
@@ -515,7 +516,7 @@ ganancias <- contador/length(posiciones)
 \centering
 \begin{tabular}{|l|l|1|1|}\hline
 
-  \textbf{Concepto}  & \textbf{VALUEV5B.MX} &\textbf{GBMMODBO.MX} & \textbf{HSBCBOLBFV.MX} \\ \hline
+  \textbf{Concepto}  & \textbf{\Sexpr{nacciones[1]}} &\textbf{GBMMODBO.MX} & \textbf{HSBCBOLBFV.MX} \\ \hline
 Retorno en exceso aritmético & \Sexpr{exc_arim[1]}& \Sexpr{exc_arim[2]}&\Sexpr{exc_arim[3]} \\ \hline
 Retorno en exceso geométrico & \Sexpr{exc_geom[1]} &\Sexpr{exc_geom[2]} &\Sexpr{exc_geom[3]}  \\ \hline
 Indicador promedio de alzas & \Sexpr{ind_alzas[1]} &\Sexpr{ind_alzas[2]} &\Sexpr{ind_alzas[3]} \\ \hline
@@ -566,7 +567,7 @@ Debido a los números obtenidos, se concluye que los fondos a utilizarse serán:
 \item ACTI500B3.MX, por ser 7 veces de los tres más destacados en las características mencionadas y visualmente notables en la tabla anterior.
 \end{enumerate}
 
-Cabe mencionar que HSBCBOLBFV.MX y VALUEV5B.MX fueron solo una vez parte de los 3 mejores en las características anteriores.
+Cabe mencionar que HSBCBOLBFV.MX y \Sexpr{nacciones[1]} fueron solo una vez parte de los 3 mejores en las características anteriores.
 
 \section{Riesgo}
 \subsection{Preparación de variables a utilizar}
@@ -581,6 +582,8 @@ desv_anual_bench <- sd(rendimientos[, ncol(rendimientos)])*sqrt(252)
 
 @
 \subsection{Ratio de \emph{Sharpe}}
+\textbf{NOTA: INTERPRETACIONES DE FONDOS ELEGIDOS AL FINAL DEL CUADRO DE RESPUESTAS} \par
+Es una medida de exceso de rendimiento por unidad de riesgo de una inversión.
 La siguiente fórmula representa el cálculo de Sharpe Ratio (SR): 
 \begin{equation}
 SR = \frac{r_{p} - r_{f}}{\sigma_p}
@@ -597,14 +600,15 @@ sharpe <- sharpe
 
 Conclusiones del método:
 \begin{enumerate}
-\item Por cada unidad de riesgo, el fondo VALUEV5B.MX pierde $16.20261$ por ciento de rendimiento.
-\item Por cada unidad de riesgo, el fondo GBMMODBO.MX pierde $20.78047$ por ciento de rendimiento.
-\item Por cada unidad de riesgo, el fondo HSBCBOLBFV.MX pierde $17.28876$ por ciento de rendimiento.
-\item Por cada unidad de riesgo, el fondo ACTI500B3.MX pierde $17.37589$ por ciento de rendimiento.
-\item Por cada unidad de riesgo, el fondo FRANOPRB1.MX pierde $13.39259$ por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo \Sexpr{nacciones[1]} pierde \Sexpr{sharpe[1]} por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo \Sexpr{nacciones[2]} pierde \Sexpr{sharpe[2]}  por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo \Sexpr{nacciones[3]} pierde \Sexpr{sharpe[3]} por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo \Sexpr{nacciones[4]} pierde \Sexpr{sharpe[4]} por ciento de rendimiento.
+\item Por cada unidad de riesgo, el fondo \Sexpr{nacciones[5]} pierde \Sexpr{sharpe[5]} por ciento de rendimiento.
 \end{enumerate
 }
 \subsection{Retorno ajustado M2}
+En este modelo el retorno adicional del portafolio es ajustado en base al risego que tiene en comparación al Benchmark.  M2 nos indica que tan bueno es el nivel de recompensa en relación al riesgo tomado.
 Para determinar el Retorno Ajustado M2, se usará la siguiente ecuación:
 \begin{equation}
 M^2 = r_{f} + SR*(\sigma_M - \sigma_p)
@@ -619,24 +623,24 @@ SR es el Sharpe Ratio
 m2 <- rend_anual + sharpe*(desv_anual_bench-desv_anual)
 m2 <- m2*100
 @
-Retorno del Portafolio: 0.022888 por ciento.Conclusiones del método: 
+Retorno del Benchmark: \Sexpr{as.numeric(rend_anual[length(rend_anual)])} por ciento.Conclusiones del método: 
 \begin{enumerate}
-\item El fondo VALUEV5B.MX tiene $26.584754$ por ciento de retorno ajustado.
-Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+\item El fondo \Sexpr{nacciones[1]} tiene \Sexpr{m2[1]} por ciento de retorno ajustado.
 
-\item El fondo GBMMODBO.MX tiene $49.957131$ por ciento de retorno ajustado negativo.
-Bajo las mismas condiciones del mercado, el retorno ajustado es menor al retorno del portafolio.
 
-\item El fondo HSBCBOLBFV.MX tiene $10.452223$ por ciento de retorno ajustado.
-Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+\item El fondo \Sexpr{nacciones[2]} tiene \Sexpr{m2[2]} por ciento de retorno ajustado negativo.
 
-\item El fondo ACTI500B3.MX tiene $3.705079$ por ciento de retorno ajustado.
-Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
 
-\item El fondo FRANOPRB1.MX tiene $69.154464$ por ciento de retorno ajustado.
-Bajo las mismas condiciones del mercado, el retorno ajustado es mayor al retorno del portafolio.
+\item El fondo \Sexpr{nacciones[3]} tiene \Sexpr{m2[3]} por ciento de retorno ajustado.
+
+\item El fondo \Sexpr{nacciones[4]} tiene \Sexpr{m2[4]} por ciento de retorno ajustado.
+
+\item El fondo \Sexpr{nacciones[5]} tiene \Sexpr{m2[5]} por ciento de retorno ajustado.
+
 \end{enumerate}
+
 \subsection{Retorno diferencial (DR)}
+Al igual que el M2, en retorno diferencial, también se trata de una medida ajustada del riesgo. En este caso es el retorno del mercado (benchmark) el que es ajustado al riesgo del portafolio. 
 Luego, para obtener el Retorno Diferencial se utilizan las siguientes ecuaciones:
 \begin{equation}
 b' = r_{f} + (\frac{r_{M} - r_{f}}{\sigma_M})*\sigma_p
@@ -655,30 +659,30 @@ Esto da como resultado el retorno ajustado del benchmark al riesgo del fondo, pa
 \begin{equation}
 DR = r_{P} - b'
 \end{equation}
+
 <<DR, warning=FALSE, message=FALSE>>=
 b_prima <- libre_riesgo + ((rend_anual_bench-libre_riesgo)/desv_anual_bench)*desv_anual
 DR <- rend_anual - b_prima
 DR <- DR*100
 @
-Retorno del Portafolio: 0.00. Conclusiones del método:
+Retorno del Benchmark: \Sexpr{as.numeric(rend_anual[length(rend_anual)])}. Conclusiones del método:
 \begin{enumerate}
-\item El fondo VALUEV5B.MX tiene $0.313307$ por ciento de retorno diferencial.
-Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+\item El fondo \Sexpr{nacciones[1]} tiene \Sexpr{DR[1]} por ciento de retorno diferencial.
 
-\item El fondo GBMMODBO.MX tiene $0.40653$ por ciento de retorno diferencial negativo.
-Bajo las mismas condiciones del mercado, el retorno diferencial es menor al retorno del portafolio.
 
-\item El fondo HSBCBOLBFV.MX tiene $0.108537$ por ciento de retorno diferencial.
-Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+\item El fondo \Sexpr{nacciones[2]} tiene \Sexpr{DR[2]} por ciento de retorno diferencial negativo.
 
-\item El fondo ACTI500B3.MX tiene $0.091393$ por ciento de retorno diferencial.
-Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+\item El fondo  \Sexpr{nacciones[3]} tiene \Sexpr{DR[3]} por ciento de retorno diferencial.
 
-\item El fondo FRANOPRB1.MX tiene $0.985499$ por ciento de retorno diferencial.
-Bajo las mismas condiciones del mercado, el retorno diferencial es mayor al retorno del portafolio.
+
+\item El fondo  \Sexpr{nacciones[4]} tiene \Sexpr{DR[4]} por ciento de retorno diferencial.
+
+\item El fondo  \Sexpr{nacciones[5]} tiene \Sexpr{DR[5]} por ciento de retorno diferencial.
+
 \end{enumerate}
 
 \subsection{GH1}
+Consiste en elevar o reducir la volatilidad del mercado de referencia (benchmark); hasta que alcance el nivel del portafolio que queremos medir.  La diferencia entre el rendimiento del portafolio y el portafolio sintético nos proporciona GH1.  Un GH1 positivo nos indica que el portafolio tuvo un mejor rendimiento que el Benchmark (asumiendo las mismas condiciones de riesgo). 
 <<gh1, message=FALSE, warning=FALSE>>=
 prop_bench <- desv_anual/desv_anual_bench
 prop_cete <- 1 - prop_bench
@@ -711,14 +715,19 @@ indicador <- rend_anual-sinteticos
 
 @
 
+\subsection{GH2}
+Por el contrario al GH1; el GH2 consiste en elevar o reducir la volatilidad del portafolio; hasta que alcance el nivel del mercado de referencia (benchmark) que queremos medir.
+Un GH2 negativo nos indica que el portafolio tuvo un mejor rendimiento que el Benchmark.
 
 <<gh2, message=FALSE, warning=FALSE>>=
 prop_bench2 <- prop_bench^(-1)
 prop_cete2  <- 1 - prop_bench2
 
 total_retorno <- numeric()
-total_retorno <- prop_bench2[1:(length (prop_bench2)-1)] * rendimientos[,1:(ncol(rendimientos)-1)]  
-aux <-  matrix(prop_cete2*libre_riesgo_anual, nrow = nrow(total_retorno), ncol = (length(prop_cete2)))
+total_retorno <- prop_bench2[1:(length (prop_bench2)-1)] * 
+  rendimientos[,1:(ncol(rendimientos)-1)]  
+aux <-  matrix(prop_cete2*libre_riesgo_anual, nrow = nrow(total_retorno), 
+               ncol = (length(prop_cete2)))
 total_retorno <- total_retorno + aux[,1:(ncol(aux)-1)]
 
 suma_retornos <- colSums(total_retorno)
@@ -737,7 +746,7 @@ nombres <- c('Ratio Sharpe', 'Retorno M2', 'Retorno diferencial', 'GH1', 'GH2')
 
   \textbf{Concepto}  & \textbf{\Sexpr{nacciones[1]}}& \textbf{\Sexpr{nacciones[2]}} &\textbf{\Sexpr{nacciones[3]}} & \textbf{\Sexpr{nacciones[4]}} & \textbf{\Sexpr{nacciones[5]}} & \textbf{\Sexpr{nacciones[6]}} \\ \hline
   
-\Sexpr{nombres[1]}&\Sexpr{as.numeric(sharpe[1])} &\Sexpr{as.numeric(sharpe[2])} &\Sexpr{as.numeric(sharpe[3])} &\Sexpr{as.numeric(sharpe[4])} &\Sexpr{as.numeric(sharpe[5])}&\Sexpr{as.numeric(sharpe[6])}|\\ \hline
+\Sexpr{nombres[1]}&\Sexpr{as.numeric(sharpe[1])} &\Sexpr{as.numeric(sharpe[2])} &\Sexpr{as.numeric(sharpe[3])} &\Sexpr{as.numeric(sharpe[4])} &\Sexpr{as.numeric(sharpe[5])}&\Sexpr{as.numeric(sharpe[6])}\\ \hline
 \Sexpr{nombres[2]}&\Sexpr{as.numeric(m2[1])} &\Sexpr{as.numeric(m2[2])} &\Sexpr{as.numeric(m2[3])} &\Sexpr{as.numeric(m2[4])} &\Sexpr{as.numeric(m2[5])}&\Sexpr{as.numeric(m2[6])}\\ \hline
 \Sexpr{nombres[3]}&\Sexpr{as.numeric(DR[1])} &\Sexpr{as.numeric(DR[2])} &\Sexpr{as.numeric(DR[3])} &\Sexpr{as.numeric(DR[4])} &\Sexpr{as.numeric(DR[5])}&\Sexpr{as.numeric(DR[6])} \\ \hline
 \Sexpr{nombres[4]}&\Sexpr{as.numeric(indicador[1])} &\Sexpr{as.numeric(indicador[2])} &\Sexpr{as.numeric(indicador[3])} &\Sexpr{as.numeric(indicador[4])} &\Sexpr{as.numeric(indicador[5])}&\Sexpr{as.numeric(indicador[6])}\\ \hline
@@ -748,7 +757,171 @@ nombres <- c('Ratio Sharpe', 'Retorno M2', 'Retorno diferencial', 'GH1', 'GH2')
 }
 \end{table}
 
+\subsection{Interpretaciones (Sharpe en adelante)}
+Se muestran los resultados de todos los fondos, y a continuación el análisis de los tres elegidos.
+En el fondo \Sexpr{nacciones[2]} se obtuvo un ratio Sharpe de \Sexpr{sharpe[2]} lo que indica un rendimiento inferior al de rentabilidad sin riesgo, en cuanto a el retorno M2 \Sexpr{m2[2]}  lo que indica que el rendimiento del activo es inferior al riesgo que se está asumiendo. Ahora observando el retorno diferencial \Sexpr{DR[2]} nos presenta  que bajo la misma volatilidad el mercado hubiera tenido un mejor comportamiento que el portafolio o fondo.  Con el análisis de GH1 obtenido de \Sexpr{indicador[2]} nos indica que bajo las mismas condiciones de volatilidad un portafolio sintético lo hubiera hecho un poco mejor. Finalmente mediante GH2 \Sexpr{gh2[2]} nos indica que el portafolio tuvo un mejor rendimiento que el Benchmark, asumiendo las mismas condicione de riesgo.
+En el fondo \Sexpr{nacciones[4]} se obtuvo un ratio Sharpe de \Sexpr{sharpe[4]} lo que indica un rendimiento inferior al de rentabilidad sin riesgo, en cuanto al retorno M2 \Sexpr{m2[4]} lo que indica que es mejor la rentabilidad del fondo ajustada al riesgo tomado. Ahora observando el retorno diferencial \Sexpr{DR[4]} hay compensación en el fondo en relación al Benchmark. Con el análisis de GH1 obtenido de \Sexpr{indicador[4]} nos indica que bajo las mismas condiciones de volatilidad un portafolio sintético lo hubiera hecho un poco mejor. Finalmente mediante GH2 \Sexpr{gh2[4]} nos indica que el portafolio tuvo un mejor rendimiento que el Benchmark, asumiendo las mismas condicione de riesgo.
+En el fondo \Sexpr{nacciones[5]} se obtuvo un ratio Sharpe de \Sexpr{sharpe[5]} lo que indica un rendimiento inferior al de rentabilidad sin riesgo, en cuanto al retorno M2 \Sexpr{m2[5]} esto indica que es mejor la rentabilidad del fondo ajustada al riesgo tomado. Ahora observando el retorno diferencial \Sexpr{DR[5]} hay compensación en el fondo en relación al Benchmark. Con el análisis de GH1 obtenido de \Sexpr{indicador[5]} nos indica que bajo las mismas condiciones de volatilidad un portafolio sintético lo hubiera hecho un poco mejor. Finalmente mediante GH2 \Sexpr{gh2[5]} nos indica que el portafolio tuvo un mejor rendimiento que el Benchmark, asumiendo las mismas condicione de riesgo.
 
+\section{Regresión}
+El motivo de realizar una regresión es la obtención de información al momento de graficar los retornos del fondo contra los del \emph{benchmark} en un diagrama de dispersión conociendo la relación entre ellos. La regresión tiene la siguiente forma:
+
+\begin{equation}\label{jotostodos}
+r_p = \alpha_R   + \beta_Rb + \epsilon_R
+\end{equation}
+
+Los coeficientes corresponden a: 
+
+\begin{itemize}
+
+  \item $r_P$ = Rendimiento del portafolio 
+  \item $\alpha_R$ = Alfa de la regresión
+  \item $\beta_R$ = Beta de la regresión
+  \item $\epsilon_R$ = Epsilon de la regresión (error)
+  \item b = Retorno del benchmark
+
+\end{itemize}
+
+\subsection{CAPM}
+Adaptando lo escrito anteriormente en la ecuación \ref{jotostodos} al modelo CAPM encontramos lo siguiente:
+
+\begin{equation}\label{capm}
+E[r_t] = r_f + \beta(r_m-r_f)
+\end{equation}
+
+Los coeficientes corresponden a: 
+
+\begin{itemize}
+
+  \item $r_f$ = Tasa libe de riesgo
+  \item $r_m$ = Rendimiento promedio Benchmark
+  \item $\beta$ = Medida de Riesgo sistemático. Pendiente de retornos del Benchmark
+(X) contra retornos del stock (Y).
+
+\end{itemize}
+
+Terminando entonces con el modelo CAPM a partir de la regresión:
+
+\begin{equation}\label{caputo}
+r_p - r_f = \alpha + \beta (b-r_f) + \epsilon
+\end{equation}
+
+\subsubsection{$\alpha$ de Jensen}
+Es una medida de riesgo ajustado a la tasa libre de riesgo que nos permite definir si un portafolio obtiene un rendimiento apropiado dado su nivel de riesgo. Cabe mencionar que si nos enfocamos en el modelo CAPM $\alpha$ debería de ser cero. Un número mayor a cero nos indica que el portafolio obtuvo retornos adicionales.  Uno menor a cero nos indica que el fondo obtuvo retornos devaluados. Es comúnmente utilizado como  \emph{valor agregado} al retorno por parte del administrador del fondo.
+
+$\alpha$ de Jensen:
+
+\begin{equation}
+   \alpha =r_p - r_f - \beta (b-r_f)  
+\end{equation}
+
+\subsubsection{$\beta$}
+
+Es un coeficiente de la volatilidad  del mercado dentro de nuestro portafolio y es relacionado directamente con el riesgo sistemático. El coeficiente como tal indica l proporción de riesgo/rendimiento del mercado que se encuentra en nuestro portafolio.
+
+\begin{equation}
+\beta = \frac{\sum_{i=1}^{i=n}  \left[ \left(r_i - r_{Fi} - \bar{r} - \bar{r_F} \right) \left( b_i - r_{Fi} - \bar{b} - \bar{r_F} \right)\right]}{\sum_{i=1}^{i=n} \left(b_i - r_{Fi} - \bar{b} - \bar{r_F}  \right)^2}
+\end{equation}
+
+
+\subsubsection{Cálculo de CAPM, $\alpha$ y de $\beta$ para los tres fondos}
+
+<<caput, message=FALSE, warning=FALSE>>=
+
+rends <- rendimientos[, elegidos]  #Se ponen rendimientos de los elegidos en una m
+exc_retorno <- rends - libre_riesgo_anual #Excedente de retorno
+bench_c <- rendimientos[, "^MXX"] - libre_riesgo_anual#Variable del bench para este apartado
+
+#Iniciando regresioens
+
+regresiones <- list()
+alfa <- numeric()
+beta <- numeric()
+alfa_anual <- numeric()
+for(i in 1:ncol(rends)){
+  regresiones[[i]] <- lm(formula = (exc_retorno[, i]  ~ bench_c))
+  alfa[i] <- as.numeric(regresiones[[i]]$coefficients[1]) 
+  beta[i] <- as.numeric(regresiones[[i]]$coefficients[2]) 
+  alfa_anual[i] <- (1+alfa[i])^252-1
+}
+names(regresiones) <- elegidos
+names(alfa) <- elegidos
+names(beta) <- elegidos
+names(alfa_anual) <- elegidos
+
+capm <-  alfa_anual + beta * (rend_anual_bench - libre_riesgo) + libre_riesgo
+
+#Definiendo variables para presentar resultados#
+
+concepto <- c('Alfa anual', 'Beta', 'CAPM', 'Dif. CAPM - Rend. Anual')
+diferencias <- capm - rend_anual[elegidos]
+@
+
+
+ \begin{table}[h!]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}\hline
+
+  \textbf{Concepto}  & \textbf{\Sexpr{elegidos[1]}}& \textbf{\Sexpr{elegidos[2]}} &\textbf{\Sexpr{elegidos[3]}}  \\ \hline
+  
+\Sexpr{concepto[1]}&\Sexpr{alfa_anual[1]} &\Sexpr{alfa_anual[2]} &\Sexpr{alfa_anual[3]} \\ \hline
+\Sexpr{concepto[2]}&\Sexpr{beta[1]} &\Sexpr{beta[2]} &\Sexpr{beta[3]} \\ \hline
+\Sexpr{concepto[3]}&\Sexpr{capm[1]} &\Sexpr{capm[2]} &\Sexpr{capm[3]} \\ \hline
+\Sexpr{concepto[4]}&\Sexpr{diferencias[1]} &\Sexpr{diferencias[2]} &\Sexpr{diferencias[3]} \\ \hline
+
+
+\end{tabular} 
+}
+\end{table}
+
+<<conclusiones_reg, message=FALSE, warning=FALSE, echo=FALSE>>=
+alfa_conc <- numeric()
+beta_conc <- numeric()
+capm_conc <- numeric()
+
+for (i in 1:length(alfa)){
+  if (alfa_anual[i] > 0){
+    alfa_conc[i] <- "el portafolio obtiene retornos adicionales"
+  } else {
+    alfa_conc[i] <- "el portafolio obtiene retornos devaluados"
+  }
+  if (beta[i] > 1 ){
+    beta_conc[i] <- "la volatilidad es mayor a la del mercado "
+  } else {
+    beta_conc[i] <- "la volatilidad es menor a la del mercado"
+  }
+}
+
+diferencias <- capm - rend_anual[elegidos]
+mejor_capm <- min(diferencias)
+
+if(mejor_capm == diferencias[1]) mejor_capm <- 1
+if(mejor_capm == diferencias[2]) mejor_capm <- 2
+if(mejor_capm == diferencias[3]) mejor_capm <- 3
+@
+
+\begin{itemize}
+  \item \Sexpr{elegidos[1]}
+    \begin{itemize}
+      \item Tiene un $\alpha$ de \Sexpr{alfa_anual[1]}, lo cual significa que \Sexpr{alfa_conc[1]}
+      \item Tiene una $\beta$ de \Sexpr{beta[1]}, lo cual significa que \Sexpr{beta_conc[1]}
+    \end{itemize}
+    
+      \item \Sexpr{elegidos[2]}
+    \begin{itemize}
+      \item Tiene un $\alpha$ de \Sexpr{alfa_anual[2]}, lo cual significa que \Sexpr{alfa_conc[2]}
+       \item Tiene una $\beta$ de \Sexpr{beta[2]}, lo cual significa que \Sexpr{beta_conc[2]}
+    \end{itemize}
+    
+      \item \Sexpr{elegidos[3]}
+    \begin{itemize}
+      \item Tiene un $\alpha$ de \Sexpr{alfa_anual[3]}, lo cual significa que \Sexpr{alfa_conc[3]}
+       \item Tiene una $\beta$ de \Sexpr{beta[3]}, lo cual significa que \Sexpr{beta_conc[3]}
+    \end{itemize}
+\end{itemize}
+
+
+El fondo \Sexpr{elegidos[mejor_capm]} es el que mejor ajusta al modelo CAPM pues tiene una mejor diferencia CAPM con respecto a su rendimiento anual y al de los otros dos fondos.
 \section{Bibliografía}
 
 \begin{itemize}
